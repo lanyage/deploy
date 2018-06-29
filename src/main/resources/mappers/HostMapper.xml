@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.archforce.deploy.dao.HostMapper">
+    <resultMap id="BaseResultMap" type="com.archforce.deploy.model.Host">
+        <id column="host_id" property="hostId" jdbcType="INTEGER"/>
+        <result column="host_name" property="hostName" jdbcType="VARCHAR"/>
+        <result column="host_ip" property="hostIp" jdbcType="VARCHAR"/>
+        <result column="ssh_port" property="sshPort" jdbcType="VARCHAR"/>
+        <result column="login_user" property="loginUser" jdbcType="VARCHAR"/>
+        <result column="login_pwd" property="loginPwd" jdbcType="VARCHAR"/>
+        <result column="login_pwd_salt" property="loginPwdSalt" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="create_user" property="createUser" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    host_id, host_name, host_ip, ssh_port, login_user, login_pwd, login_pwd_salt, create_time, 
+    create_user, update_time, update_user
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from host
+        where host_id = #{hostId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from host
+    where host_id = #{hostId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.archforce.deploy.model.Host">
+    insert into host (host_id, host_name, host_ip, 
+      ssh_port, login_user, login_pwd, 
+      login_pwd_salt, create_time, create_user, 
+      update_time, update_user)
+    values (#{hostId,jdbcType=INTEGER}, #{hostName,jdbcType=VARCHAR}, #{hostIp,jdbcType=VARCHAR}, 
+      #{sshPort,jdbcType=VARCHAR}, #{loginUser,jdbcType=VARCHAR}, #{loginPwd,jdbcType=VARCHAR}, 
+      #{loginPwdSalt,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.archforce.deploy.model.Host">
+        insert into host
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hostId != null">
+                host_id,
+            </if>
+            <if test="hostName != null">
+                host_name,
+            </if>
+            <if test="hostIp != null">
+                host_ip,
+            </if>
+            <if test="sshPort != null">
+                ssh_port,
+            </if>
+            <if test="loginUser != null">
+                login_user,
+            </if>
+            <if test="loginPwd != null">
+                login_pwd,
+            </if>
+            <if test="loginPwdSalt != null">
+                login_pwd_salt,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hostId != null">
+                #{hostId,jdbcType=INTEGER},
+            </if>
+            <if test="hostName != null">
+                #{hostName,jdbcType=VARCHAR},
+            </if>
+            <if test="hostIp != null">
+                #{hostIp,jdbcType=VARCHAR},
+            </if>
+            <if test="sshPort != null">
+                #{sshPort,jdbcType=VARCHAR},
+            </if>
+            <if test="loginUser != null">
+                #{loginUser,jdbcType=VARCHAR},
+            </if>
+            <if test="loginPwd != null">
+                #{loginPwd,jdbcType=VARCHAR},
+            </if>
+            <if test="loginPwdSalt != null">
+                #{loginPwdSalt,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.archforce.deploy.model.Host">
+        update host
+        <set>
+            <if test="hostName != null">
+                host_name = #{hostName,jdbcType=VARCHAR},
+            </if>
+            <if test="hostIp != null">
+                host_ip = #{hostIp,jdbcType=VARCHAR},
+            </if>
+            <if test="sshPort != null">
+                ssh_port = #{sshPort,jdbcType=VARCHAR},
+            </if>
+            <if test="loginUser != null">
+                login_user = #{loginUser,jdbcType=VARCHAR},
+            </if>
+            <if test="loginPwd != null">
+                login_pwd = #{loginPwd,jdbcType=VARCHAR},
+            </if>
+            <if test="loginPwdSalt != null">
+                login_pwd_salt = #{loginPwdSalt,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where host_id = #{hostId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.archforce.deploy.model.Host">
+    update host
+    set host_name = #{hostName,jdbcType=VARCHAR},
+      host_ip = #{hostIp,jdbcType=VARCHAR},
+      ssh_port = #{sshPort,jdbcType=VARCHAR},
+      login_user = #{loginUser,jdbcType=VARCHAR},
+      login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      login_pwd_salt = #{loginPwdSalt,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where host_id = #{hostId,jdbcType=INTEGER}
+  </update>
+    <!--高级查询-->
+    <select id="selectAll" resultMap="BaseResultMap">
+    select host_id, host_name, host_ip,
+      ssh_port, login_user, login_pwd,
+      login_pwd_salt, create_time, create_user,
+      update_time, update_user
+      from host
+  </select>
+</mapper>

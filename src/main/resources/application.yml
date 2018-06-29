@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dbdeploy?useSSL=false
+    username: root
+    password: 920725
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.archforce.deploy.model
+  config-location: classpath:mybatis-config.xml

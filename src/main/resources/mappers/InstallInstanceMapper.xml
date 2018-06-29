@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.archforce.deploy.dao.InstallInstanceMapper" >
+  <resultMap id="BaseResultMap" type="com.archforce.deploy.model.InstallInstance" >
+    <id column="module_inst_id" property="moduleInstId" jdbcType="INTEGER" />
+    <result column="module_id" property="moduleId" jdbcType="INTEGER" />
+    <result column="host_id" property="hostId" jdbcType="INTEGER" />
+    <result column="module_inst_name" property="moduleInstName" jdbcType="VARCHAR" />
+    <result column="bind_ip" property="bindIp" jdbcType="VARCHAR" />
+    <result column="bind_ports" property="bindPorts" jdbcType="VARCHAR" />
+    <result column="previous_version" property="previousVersion" jdbcType="VARCHAR" />
+    <result column="current_version" property="currentVersion" jdbcType="VARCHAR" />
+    <result column="initial_path" property="initialPath" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+    <result column="extension" property="extension" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    module_inst_id, module_id, host_id, module_inst_name, bind_ip, bind_ports, previous_version, 
+    current_version, initial_path, state, create_time, create_user, update_time, update_user, 
+    extension
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from module_inst_host
+    where module_inst_id = #{moduleInstId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from module_inst_host
+    where module_inst_id = #{moduleInstId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.archforce.deploy.model.InstallInstance" >
+    insert into module_inst_host (module_inst_id, module_id, host_id, 
+      module_inst_name, bind_ip, bind_ports, 
+      previous_version, current_version, initial_path, 
+      state, create_time, create_user, 
+      update_time, update_user, extension
+      )
+    values (#{moduleInstId,jdbcType=INTEGER}, #{moduleId,jdbcType=INTEGER}, #{hostId,jdbcType=INTEGER}, 
+      #{moduleInstName,jdbcType=VARCHAR}, #{bindIp,jdbcType=VARCHAR}, #{bindPorts,jdbcType=VARCHAR}, 
+      #{previousVersion,jdbcType=VARCHAR}, #{currentVersion,jdbcType=VARCHAR}, #{initialPath,jdbcType=VARCHAR}, 
+      #{state,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{extension,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.archforce.deploy.model.InstallInstance" >
+    insert into module_inst_host
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="moduleInstId != null" >
+        module_inst_id,
+      </if>
+      <if test="moduleId != null" >
+        module_id,
+      </if>
+      <if test="hostId != null" >
+        host_id,
+      </if>
+      <if test="moduleInstName != null" >
+        module_inst_name,
+      </if>
+      <if test="bindIp != null" >
+        bind_ip,
+      </if>
+      <if test="bindPorts != null" >
+        bind_ports,
+      </if>
+      <if test="previousVersion != null" >
+        previous_version,
+      </if>
+      <if test="currentVersion != null" >
+        current_version,
+      </if>
+      <if test="initialPath != null" >
+        initial_path,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="extension != null" >
+        extension,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="moduleInstId != null" >
+        #{moduleInstId,jdbcType=INTEGER},
+      </if>
+      <if test="moduleId != null" >
+        #{moduleId,jdbcType=INTEGER},
+      </if>
+      <if test="hostId != null" >
+        #{hostId,jdbcType=INTEGER},
+      </if>
+      <if test="moduleInstName != null" >
+        #{moduleInstName,jdbcType=VARCHAR},
+      </if>
+      <if test="bindIp != null" >
+        #{bindIp,jdbcType=VARCHAR},
+      </if>
+      <if test="bindPorts != null" >
+        #{bindPorts,jdbcType=VARCHAR},
+      </if>
+      <if test="previousVersion != null" >
+        #{previousVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="currentVersion != null" >
+        #{currentVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="initialPath != null" >
+        #{initialPath,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="extension != null" >
+        #{extension,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.archforce.deploy.model.InstallInstance" >
+    update module_inst_host
+    <set >
+      <if test="moduleId != null" >
+        module_id = #{moduleId,jdbcType=INTEGER},
+      </if>
+      <if test="hostId != null" >
+        host_id = #{hostId,jdbcType=INTEGER},
+      </if>
+      <if test="moduleInstName != null" >
+        module_inst_name = #{moduleInstName,jdbcType=VARCHAR},
+      </if>
+      <if test="bindIp != null" >
+        bind_ip = #{bindIp,jdbcType=VARCHAR},
+      </if>
+      <if test="bindPorts != null" >
+        bind_ports = #{bindPorts,jdbcType=VARCHAR},
+      </if>
+      <if test="previousVersion != null" >
+        previous_version = #{previousVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="currentVersion != null" >
+        current_version = #{currentVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="initialPath != null" >
+        initial_path = #{initialPath,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="extension != null" >
+        extension = #{extension,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where module_inst_id = #{moduleInstId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.archforce.deploy.model.InstallInstance" >
+    update module_inst_host
+    set module_id = #{moduleId,jdbcType=INTEGER},
+      host_id = #{hostId,jdbcType=INTEGER},
+      module_inst_name = #{moduleInstName,jdbcType=VARCHAR},
+      bind_ip = #{bindIp,jdbcType=VARCHAR},
+      bind_ports = #{bindPorts,jdbcType=VARCHAR},
+      previous_version = #{previousVersion,jdbcType=VARCHAR},
+      current_version = #{currentVersion,jdbcType=VARCHAR},
+      initial_path = #{initialPath,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      extension = #{extension,jdbcType=VARCHAR}
+    where module_inst_id = #{moduleInstId,jdbcType=INTEGER}
+  </update>
+  <insert id="saveBatch" parameterType="java.util.List">
+    <selectKey resultType ="java.lang.Integer" keyProperty= "moduleInstId" order= "AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into module_inst_host (module_id, host_id,
+    module_inst_name, bind_ip, bind_ports,
+    previous_version, current_version, initial_path,
+    state, create_time, create_user,
+    update_time, update_user, extension
+    ) VALUES
+    <foreach collection ="list" item="instance" index= "index" separator =",">
+      (#{instance.moduleId}, #{instance.hostId},
+      #{instance.moduleInstName},  #{instance.bindIp}, #{instance.bindPorts},
+      #{instance.previousVersion},  #{instance.currentVersion},  #{instance.initialPath},
+      #{instance.state},  #{instance.createTime},  #{instance.createUser},
+      #{instance.updateTime},  #{instance.updateUser},  #{instance.extension}
+      )
+    </foreach>
+  </insert>
+  <select id="selectByProduct" resultMap="BaseResultMap">
+    select distinct mih.* from module_inst_host mih, module m, product_module pm, product p where pm.product_id = p.product_id and pm.module_id = mih.module_id and p.product_id = #{productId};
+  </select>
+</mapper>

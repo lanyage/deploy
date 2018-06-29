@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.archforce.deploy.dao.SubTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.archforce.deploy.model.SubTask" >
+    <id column="sub_task_id" property="subTaskId" jdbcType="INTEGER" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="sub_task_order" property="subTaskOrder" jdbcType="INTEGER" />
+    <result column="module_inst_id" property="moduleInstId" jdbcType="INTEGER" />
+    <result column="previous_version" property="previousVersion" jdbcType="VARCHAR" />
+    <result column="target_version" property="targetVersion" jdbcType="VARCHAR" />
+    <result column="sub_task_state" property="subTaskState" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    sub_task_id, task_id, sub_task_order, module_inst_id, previous_version, target_version, 
+    sub_task_state, create_time, create_user, update_time, update_user
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from deploy_sub_task
+    where sub_task_id = #{subTaskId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from deploy_sub_task
+    where sub_task_id = #{subTaskId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.archforce.deploy.model.SubTask" useGeneratedKeys="true" keyProperty="subTaskId">
+    insert into deploy_sub_task (sub_task_id, task_id, sub_task_order, 
+      module_inst_id, previous_version, target_version, 
+      sub_task_state, create_time, create_user, 
+      update_time, update_user)
+    values (#{subTaskId,jdbcType=INTEGER}, #{taskId,jdbcType=INTEGER}, #{subTaskOrder,jdbcType=INTEGER}, 
+      #{moduleInstId,jdbcType=INTEGER}, #{previousVersion,jdbcType=VARCHAR}, #{targetVersion,jdbcType=VARCHAR}, 
+      #{subTaskState,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.archforce.deploy.model.SubTask" useGeneratedKeys="true" keyProperty="subTaskId">
+    insert into deploy_sub_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="subTaskId != null" >
+        sub_task_id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="subTaskOrder != null" >
+        sub_task_order,
+      </if>
+      <if test="moduleInstId != null" >
+        module_inst_id,
+      </if>
+      <if test="previousVersion != null" >
+        previous_version,
+      </if>
+      <if test="targetVersion != null" >
+        target_version,
+      </if>
+      <if test="subTaskState != null" >
+        sub_task_state,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="subTaskId != null" >
+        #{subTaskId,jdbcType=INTEGER},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="subTaskOrder != null" >
+        #{subTaskOrder,jdbcType=INTEGER},
+      </if>
+      <if test="moduleInstId != null" >
+        #{moduleInstId,jdbcType=INTEGER},
+      </if>
+      <if test="previousVersion != null" >
+        #{previousVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="targetVersion != null" >
+        #{targetVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="subTaskState != null" >
+        #{subTaskState,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.archforce.deploy.model.SubTask" >
+    update deploy_sub_task
+    <set >
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="subTaskOrder != null" >
+        sub_task_order = #{subTaskOrder,jdbcType=INTEGER},
+      </if>
+      <if test="moduleInstId != null" >
+        module_inst_id = #{moduleInstId,jdbcType=INTEGER},
+      </if>
+      <if test="previousVersion != null" >
+        previous_version = #{previousVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="targetVersion != null" >
+        target_version = #{targetVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="subTaskState != null" >
+        sub_task_state = #{subTaskState,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sub_task_id = #{subTaskId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.archforce.deploy.model.SubTask" >
+    update deploy_sub_task
+    set task_id = #{taskId,jdbcType=INTEGER},
+      sub_task_order = #{subTaskOrder,jdbcType=INTEGER},
+      module_inst_id = #{moduleInstId,jdbcType=INTEGER},
+      previous_version = #{previousVersion,jdbcType=VARCHAR},
+      target_version = #{targetVersion,jdbcType=VARCHAR},
+      sub_task_state = #{subTaskState,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where sub_task_id = #{subTaskId,jdbcType=INTEGER}
+  </update>
+</mapper>
