@@ -10,6 +10,7 @@ import com.archforce.deploy.service.DeployService;
 import com.archforce.deploy.service.InstallInstanceService;
 import com.archforce.deploy.service.ModuleService;
 import com.archforce.deploy.utils.ResultUtil;
+import com.sun.tools.corba.se.idl.InterfaceGen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,26 +65,33 @@ public class DeployController {
         //开启任务
         List<SubTask> subTasks = deployService.openTask(productId, targetVersion, instances, TaskType.INSTALLING);
         //开始安装组件
-        Map<Integer,Integer> unfinished = new HashMap<>();
-        unfinished.put(1,1);
+        Map<Integer, Integer> unfinished = new HashMap<>();
+        unfinished.put(1, 1);
         for (int i = 0; i < instances.size(); i++) {
             SubTask subTask = subTasks.get(i);
             InstallInstance instance = instances.get(i);
-            int result = deployService.installModule(subTask, instance);
-            deployService.installModuleHelp(subTask, instance, result, TaskType.INSTALLING);
-            if(subTask.getSubTaskState() != StatusType.SUCCEED.getI())
-                unfinished.put(subTask.getSubTaskId(), instance.getModuleInstId());
+            int result = deployService.installModule(instance);
+            deployService.installModuleHelp(subTask, instance, result, TaskType.INSTALLING, unfinished);
         }
         return ResultUtil.success(unfinished);
     }
 
-    public Result reInstall() {
-        return null;
+    @PutMapping("/reInstall/{subTaskId}")
+    public Result reInstall(@PathVariable("subTaskId") int subTaskId) {
+        Map<Integer, Integer> unfinished = new HashMap<>();
+        unfinished.put(1, 1);
+        deployService.reInstall(subTaskId,TaskType.INSTALLING, unfinished);
+        return ResultUtil.success(unfinished);
     }
 
     @GetMapping("/instance/getAllByProduct/{productId}")
     public Result getAllInstallInstanceOfProduct(@PathVariable("productId") int productId) {
         List<InstallInstance> instances = instanceService.getByProduct(productId);
         return ResultUtil.success(instances);
+    }
+
+    @GetMapping("/listInstancesByProduct")
+    public Result listInstancesByProduct() {
+        
     }
 }

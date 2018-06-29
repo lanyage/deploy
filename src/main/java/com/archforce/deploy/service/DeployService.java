@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lanyage on 2018/6/29.
@@ -152,7 +153,7 @@ public class DeployService {
         return subTasks;
     }
 
-    public int installModule(SubTask subTask, InstallInstance instance) {
+    public int installModule(InstallInstance instance) {
         File dest = new File(instance.getInitialPath());
         int hostId = instance.getHostId();
         Host host = hostDao.selectByPrimaryKey(hostId);
@@ -162,7 +163,7 @@ public class DeployService {
     }
 
     @Transactional
-    public void installModuleHelp(SubTask subTask, InstallInstance instance, int result, TaskType taskType) {
+    public void installModuleHelp(SubTask subTask, InstallInstance instance, int result, TaskType taskType, Map<Integer, Integer> unfinished) {
         switch (taskType) {
             case INSTALLING:
                 if (result == 0)
@@ -170,6 +171,8 @@ public class DeployService {
                 else
                     subTaskFails(subTask, instance, taskType);
         }
+        if (subTask.getSubTaskState() != StatusType.SUCCEED.getI())
+            unfinished.put(subTask.getSubTaskId(), instance.getModuleInstId());
     }
 
     private void subTaskFails(SubTask subTask, InstallInstance instance, TaskType taskType) {
@@ -177,7 +180,6 @@ public class DeployService {
         instance.setState(subTask.getSubTaskState());
         subTaskDao.updateByPrimaryKeySelective(subTask);
         instanceDao.updateByPrimaryKeySelective(instance);
-
     }
 
     private void subTaskSuccess(SubTask subTask, InstallInstance instance, TaskType taskType) {
@@ -185,5 +187,14 @@ public class DeployService {
         instance.setCurrentVersion(subTask.getTargetVersion()).setState(subTask.getSubTaskState());
         subTaskDao.updateByPrimaryKeySelective(subTask);
         instanceDao.updateByPrimaryKeySelective(instance);
+    }
+
+    @Transactional
+    public void reInstall(int subTaskId, TaskType taskType, Map<Integer, Integer> unfinished) {
+        SubTask subTask = subTaskDao.selectByPrimaryKey(subTaskId);
+        int instanceId = subTask.getModuleInstId();
+        InstallInstance instance = instanceDao.selectByPrimaryKey(instanceId);
+        int result = installModule(instance);
+        installModuleHelp(subTask, instance, result, taskType, unfinished);
     }
 }
