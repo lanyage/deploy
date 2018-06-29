@@ -138,6 +138,9 @@ public class DeployService {
             default:
                 break;
         }
+        if (mainTask.getTargetVersion() == null) {
+            mainTask.setTargetVersion(instances.get(0).getCurrentVersion());
+        }
         mainTaskDao.insertSelective(mainTask);
         logger.info("insert main task:" + mainTask.getTaskType());
         int mainTaskId = mainTask.getTaskId();
@@ -146,8 +149,16 @@ public class DeployService {
         for (InstallInstance instance : instances) {
             SubTask subTask = new SubTask();
             int instanceId = instance.getModuleInstId();
-            String previousVersion = instance.getCurrentVersion();
-            String subTargetVersion = mainTask.getTargetVersion();
+            String previousVersion;
+            if (taskType == TaskType.EXPANDING)
+                previousVersion = instance.getPreviousVersion();
+            else
+                previousVersion = instance.getCurrentVersion();
+            String subTargetVersion;
+            if (taskType == TaskType.EXPANDING)
+                subTargetVersion = instance.getCurrentVersion();
+            else
+                subTargetVersion = mainTask.getTargetVersion();
             subTask.setTaskId(mainTaskId)
                     .setSubTaskOrder(-1)
                     .setModuleInstId(instanceId)
@@ -176,12 +187,12 @@ public class DeployService {
         if (result == 0) {
             subTaskSuccess(subTask, instance, taskType);
         } else
-            subTaskFails(subTask, instance, taskType);
+            subTaskFails(subTask, instance);
         if (subTask.getSubTaskState() != StatusType.SUCCEED.getI())
             unfinished.put(subTask.getSubTaskId(), instance.getModuleInstId());
     }
 
-    private void subTaskFails(SubTask subTask, InstallInstance instance, TaskType taskType) {
+    private void subTaskFails(SubTask subTask, InstallInstance instance) {
         subTask.setSubTaskState(StatusType.FAILED.getI()).setUpdateTime(new Date()).setUpdateUser("nobody");
         instance.setState(subTask.getSubTaskState());
         subTaskDao.updateByPrimaryKeySelective(subTask);
@@ -190,9 +201,10 @@ public class DeployService {
 
     private void subTaskSuccess(SubTask subTask, InstallInstance instance, TaskType taskType) {
         subTask.setSubTaskState(StatusType.SUCCEED.getI())
-                .setPreviousVersion(instance.getCurrentVersion())
                 .setUpdateTime(new Date())
                 .setUpdateUser("nobody");
+        if (taskType != TaskType.EXPANDING)
+            subTask.setPreviousVersion(instance.getCurrentVersion());
         instance.setPreviousVersion(subTask.getPreviousVersion())
                 .setCurrentVersion(subTask.getTargetVersion())
                 .setState(subTask.getSubTaskState());
@@ -232,5 +244,28 @@ public class DeployService {
         instanceDao.updateByPrimaryKeySelective(instance);
         instance = instanceDao.selectByPrimaryKey(instance.getModuleInstId());
         return instance;
+    }
+
+    @Transactional
+    public void deleteInstancesBatch(int[] instanceIds) {
+        for (int instanceId : instanceIds) {
+            InstallInstance instance = instanceDao.selectByPrimaryKey(instanceId);
+            instance.setState(StatusType.DELETED.getI());
+            instanceDao.updateByPrimaryKeySelective(instance);
+        }
+    }
+
+    @Transactional
+    public List<InstallInstance> saveOrUpdateInstances(List<InstallInstance> instances) {
+        for (InstallInstance instance : instances) {
+            if (instance.getModuleInstId() == null) {
+                instance.setCreateTime(new Date()).setCreateUser("nobody");
+                instanceDao.insertSelective(instance);
+            } else {
+                instance.setUpdateTime(new Date()).setUpdateUser("nobody");
+                instanceDao.updateByPrimaryKeySelective(instance);
+            }
+        }
+        return instances;
     }
 }

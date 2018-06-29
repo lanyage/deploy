@@ -2,14 +2,12 @@ package com.archforce.deploy.controller;
 
 import com.archforce.deploy.enums.TaskType;
 import com.archforce.deploy.model.InstallInstance;
-import com.archforce.deploy.model.MainTask;
 import com.archforce.deploy.model.SubTask;
 import com.archforce.deploy.pojo.Result;
 import com.archforce.deploy.pojo.UploadReply;
 import com.archforce.deploy.service.DeployService;
 import com.archforce.deploy.service.InstallInstanceService;
 import com.archforce.deploy.service.MainTaskService;
-import com.archforce.deploy.service.ModuleService;
 import com.archforce.deploy.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -137,5 +135,44 @@ public class DeployController {
     public Result updateModule(@RequestBody InstallInstance instance) {
         instance = deployService.updateInstance(instance);
         return ResultUtil.success(instance);
+    }
+
+    @DeleteMapping("/deleteInstancesBatch")
+    public Result deleteInstancesBatch(@RequestBody int[] instanceIds) {
+        deployService.deleteInstancesBatch(instanceIds);
+        return ResultUtil.success(instanceIds);
+    }
+
+    @PostMapping("/saveOrUpdateInstances")
+    public Result saveOrUpdateInstances(@RequestBody List<InstallInstance> instances) {
+        instances = deployService.saveOrUpdateInstances(instances);
+        return ResultUtil.success(instances);
+    }
+
+    @PostMapping("/startExpand/{productId}")
+    public Result startExpand(@PathVariable("productId") int productId,
+                               @RequestBody List<InstallInstance> instances) {
+        //更新组件状态为正在进行时
+        deployService.changeStatus(instances, TaskType.EXPANDING);
+        //开启任务
+        List<SubTask> subTasks = deployService.openTask(productId, null, instances, TaskType.EXPANDING);
+        //开始安装组件
+        Map<Integer, Integer> unfinished = new HashMap<>();
+        unfinished.put(1, 1);
+        for (int i = 0; i < instances.size(); i++) {
+            SubTask subTask = subTasks.get(i);
+            InstallInstance instance = instances.get(i);
+            int result = deployService.installModule(instance);
+            deployService.installModuleHelp(subTask, instance, result, TaskType.EXPANDING, unfinished);
+        }
+        return ResultUtil.success(unfinished);
+    }
+
+    @PutMapping("/reExpand/{subTaskId}")
+    public Result reExpand(@PathVariable("subTaskId") int subTaskId) {
+        Map<Integer, Integer> unfinished = new HashMap<>();
+        unfinished.put(1, 1);
+        deployService.reInstall(subTaskId, TaskType.EXPANDING, unfinished);
+        return ResultUtil.success(unfinished);
     }
 }

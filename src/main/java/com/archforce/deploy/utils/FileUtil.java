@@ -114,7 +114,7 @@ public class FileUtil {
     public static int moveToRemoteHost(File dest, String hostIp) {
         StringBuilder sb = new StringBuilder("move ");
         String absp = dest.getAbsolutePath();
-        sb.append(dest.getAbsoluteFile()).append(" to ").append(hostIp);
+        sb.append(absp).append(" to ").append(hostIp);
         System.out.println(sb.toString());
         return 0;
     }

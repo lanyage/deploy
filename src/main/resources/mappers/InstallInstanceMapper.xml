@@ -33,7 +33,7 @@
     delete from module_inst_host
     where module_inst_id = #{moduleInstId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.archforce.deploy.model.InstallInstance" >
+  <insert id="insert" parameterType="com.archforce.deploy.model.InstallInstance" useGeneratedKeys="true" keyProperty="moduleInstId">
     insert into module_inst_host (module_inst_id, module_id, host_id, 
       module_inst_name, bind_ip, bind_ports, 
       previous_version, current_version, initial_path, 
@@ -47,7 +47,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{extension,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.archforce.deploy.model.InstallInstance" >
+  <insert id="insertSelective" parameterType="com.archforce.deploy.model.InstallInstance" useGeneratedKeys="true" keyProperty="moduleInstId">
     insert into module_inst_host
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="moduleInstId != null" >
