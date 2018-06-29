@@ -1,6 +1,5 @@
 package com.archforce.deploy.utils;
 
-import com.archforce.deploy.enums.FileType;
 import com.archforce.deploy.pojo.UploadReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,12 +76,12 @@ public class FileUtil {
 
         List<String> paths = new ArrayList<>();
         List<UploadReply> replies = new ArrayList<>();
-        String mainVersion = "1.0.0";
-        String web = "/Users/lanyage/software/ami/web/1.0.0/web-1.0.0.jar";
-        String service = "/Users/lanyage/software/ami/service/1.0.0/service-1.0.0.jar";
-        //String mainVersion = "2.0.0";
-        //String web = "/Users/lanyage/software/ami/web/2.0.0/web-2.0.0.jar";
-        //String service = "/Users/lanyage/software/ami/service/2.0.0/service-2.0.0.jar";
+//        String mainVersion = "1.0.0";
+//        String web = "/Users/lanyage/software/ami/web/1.0.0/web-1.0.0.jar";
+//        String service = "/Users/lanyage/software/ami/service/1.0.0/service-1.0.0.jar";
+        String mainVersion = "2.0.0";
+        String web = "/Users/lanyage/software/ami/web/2.0.0/web-2.0.0.jar";
+        String service = "/Users/lanyage/software/ami/service/2.0.0/service-2.0.0.jar";
         paths.add(web);
         paths.add(service);
 
@@ -96,10 +95,10 @@ public class FileUtil {
 
     public static UploadReply unzipModule(File dest) {
         logger.info("解压:" + dest.getName());
-        String mainVersion = "1.0.0";
-        String web = "/Users/lanyage/software/ami/web/1.0.0/web-1.0.0.jar";
-        //String mainVersion = "2.0.0";
-        //String web = "/Users/lanyage/software/ami/web/2.0.0/web-2.0.0.jar";
+//        String mainVersion = "1.0.0";
+//        String web = "/Users/lanyage/software/ami/web/1.0.0/web-1.0.0.jar";
+        String mainVersion = "2.0.0";
+        String web = "/Users/lanyage/software/ami/web/2.0.0/web-2.0.0.jar";
         UploadReply reply = resolvePath(web);
         return reply;
     }

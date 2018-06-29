@@ -1,16 +1,16 @@
 package com.archforce.deploy.controller;
 
-import com.archforce.deploy.enums.StatusType;
 import com.archforce.deploy.enums.TaskType;
 import com.archforce.deploy.model.InstallInstance;
+import com.archforce.deploy.model.MainTask;
 import com.archforce.deploy.model.SubTask;
 import com.archforce.deploy.pojo.Result;
 import com.archforce.deploy.pojo.UploadReply;
 import com.archforce.deploy.service.DeployService;
 import com.archforce.deploy.service.InstallInstanceService;
+import com.archforce.deploy.service.MainTaskService;
 import com.archforce.deploy.service.ModuleService;
 import com.archforce.deploy.utils.ResultUtil;
-import com.sun.tools.corba.se.idl.InterfaceGen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,10 +28,11 @@ public class DeployController {
     @Autowired
     private DeployService deployService;
     @Autowired
-    private ModuleService moduleService;
+    private MainTaskService mainTaskService;
     @Autowired
     private InstallInstanceService instanceService;
 
+    /*------------------------------安装模块-------------------------------*/
     @PostMapping("/uploadProduct")
     public Result uploadProduct(@RequestParam("product") MultipartFile product) {
         //上传文件
@@ -46,8 +47,8 @@ public class DeployController {
         //上传文件
         UploadReply reply = deployService.uploadModule(module, productId);
         //更新模块版本
-        deployService.updateModule(reply);
-        return null;
+        deployService.updateModuleVersion(reply);
+        return ResultUtil.success();
     }
 
     @PostMapping("/saveInstances")
@@ -80,18 +81,61 @@ public class DeployController {
     public Result reInstall(@PathVariable("subTaskId") int subTaskId) {
         Map<Integer, Integer> unfinished = new HashMap<>();
         unfinished.put(1, 1);
-        deployService.reInstall(subTaskId,TaskType.INSTALLING, unfinished);
+        deployService.reInstall(subTaskId, TaskType.INSTALLING, unfinished);
         return ResultUtil.success(unfinished);
     }
 
-    @GetMapping("/instance/getAllByProduct/{productId}")
+    @GetMapping("/listInstancesByProduct/{productId}")
     public Result getAllInstallInstanceOfProduct(@PathVariable("productId") int productId) {
         List<InstallInstance> instances = instanceService.getByProduct(productId);
         return ResultUtil.success(instances);
     }
 
-    @GetMapping("/listInstancesByProduct")
-    public Result listInstancesByProduct() {
-        
+    /*------------------------------升级模块-------------------------------*/
+    @PutMapping("/updateInstances")
+    public Result updateInstances(@RequestBody List<InstallInstance> instances) {
+        instances = deployService.updateInstances(instances);
+        return ResultUtil.success(instances);
+    }
+
+    @PostMapping("/startUpgrade/{productId}/{targetVersion}")
+    public Result startUpgrade(@PathVariable("productId") int productId,
+                               @PathVariable("targetVersion") String targetVersion,
+                               @RequestBody List<InstallInstance> instances) {
+        //更新组件状态为正在进行时
+        deployService.changeStatus(instances, TaskType.UPGRADING);
+        //开启任务
+        List<SubTask> subTasks = deployService.openTask(productId, targetVersion, instances, TaskType.UPGRADING);
+        //开始安装组件
+        Map<Integer, Integer> unfinished = new HashMap<>();
+        unfinished.put(1, 1);
+        for (int i = 0; i < instances.size(); i++) {
+            SubTask subTask = subTasks.get(i);
+            InstallInstance instance = instances.get(i);
+            int result = deployService.installModule(instance);
+            deployService.installModuleHelp(subTask, instance, result, TaskType.UPGRADING, unfinished);
+        }
+        return ResultUtil.success(unfinished);
+    }
+
+    @PutMapping("/reUpgrade/{subTaskId}")
+    public Result reUpgrade(@PathVariable("subTaskId") int subTaskId) {
+        Map<Integer, Integer> unfinished = new HashMap<>();
+        unfinished.put(1, 1);
+        deployService.reInstall(subTaskId, TaskType.INSTALLING, unfinished);
+        return ResultUtil.success(unfinished);
+    }
+
+    @PutMapping("/mainTaskSuccess/{mainTaskId}")
+    public Result mainTaskSuccess(@PathVariable("mainTaskId") int mainTaskId) {
+        deployService.mainTaskSuccess(mainTaskId);
+        return ResultUtil.success();
+    }
+
+    /*------------------------------模块扩容模块-------------------------------*/
+    @PutMapping("/updateInstance")
+    public Result updateModule(@RequestBody InstallInstance instance) {
+        instance = deployService.updateInstance(instance);
+        return ResultUtil.success(instance);
     }
 }
