@@ -151,7 +151,7 @@ public class DeployController {
 
     @PostMapping("/startExpand/{productId}")
     public Result startExpand(@PathVariable("productId") int productId,
-                               @RequestBody List<InstallInstance> instances) {
+                              @RequestBody List<InstallInstance> instances) {
         //更新组件状态为正在进行时
         deployService.changeStatus(instances, TaskType.EXPANDING);
         //开启任务
@@ -173,6 +173,35 @@ public class DeployController {
         Map<Integer, Integer> unfinished = new HashMap<>();
         unfinished.put(1, 1);
         deployService.reInstall(subTaskId, TaskType.EXPANDING, unfinished);
+        return ResultUtil.success(unfinished);
+    }
+
+    /*------------------------------产品回退-------------------------------*/
+    @PostMapping("/startRegain/{productId}/{targetVersion}")
+    public Result startRegain(@PathVariable("productId") int productId,
+                              @PathVariable("targetVersion") String targetVersion,
+                              @RequestBody List<InstallInstance> instances) {
+        //更新组件状态为正在进行时
+        deployService.changeStatus(instances, TaskType.REGAINING);
+        //开启任务
+        List<SubTask> subTasks = deployService.openTask(productId, targetVersion, instances, TaskType.REGAINING);
+        //开始安装组件
+        Map<Integer, Integer> unfinished = new HashMap<>();
+        unfinished.put(1, 1);
+        for (int i = 0; i < instances.size(); i++) {
+            SubTask subTask = subTasks.get(i);
+            InstallInstance instance = instances.get(i);
+            int result = deployService.installModule(instance);
+            deployService.installModuleHelp(subTask, instance, result, TaskType.REGAINING, unfinished);
+        }
+        return ResultUtil.success(unfinished);
+    }
+
+    @PutMapping("/reRegain/{subTaskId}")
+    public Result reRegain(@PathVariable("subTaskId") int subTaskId) {
+        Map<Integer, Integer> unfinished = new HashMap<>();
+        unfinished.put(1, 1);
+        deployService.reInstall(subTaskId, TaskType.REGAINING, unfinished);
         return ResultUtil.success(unfinished);
     }
 }

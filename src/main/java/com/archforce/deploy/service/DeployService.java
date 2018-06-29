@@ -133,7 +133,7 @@ public class DeployService {
                 mainTask.setTaskType(TaskType.EXPANDING.getV()).setTaskDesc(TaskType.EXPANDING.getV()).setTaskState(StatusType.NOT_EXPANDED.getI());
                 break;
             case REGAINING:
-                mainTask.setTaskDesc(TaskType.REGAINING.getV()).setTaskDesc(TaskType.EXPANDING.getV()).setTaskState(StatusType.NOT_REGAINED.getI());
+                mainTask.setTaskType(TaskType.REGAINING.getV()).setTaskDesc(TaskType.REGAINING.getV()).setTaskState(StatusType.NOT_REGAINED.getI());
                 break;
             default:
                 break;
