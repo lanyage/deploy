@@ -169,4 +169,38 @@
       update_time, update_user
       from host
   </select>
+    <select id="selectAllInPage" resultMap="BaseResultMap">
+        select host_id, host_name, host_ip,
+      ssh_port, login_user, login_pwd,
+      login_pwd_salt, create_time, create_user,
+      update_time, update_user
+      from host ORDER by `host_id`
+      limit #{startIndex}, #{pageSize}
+    </select>
+
+    <delete id="deleteBatch">
+        DELETE from host where host_id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAllByHostIpLike" resultMap="BaseResultMap">
+      select host_id, host_name, host_ip,
+      ssh_port, login_user, login_pwd,
+      login_pwd_salt, create_time, create_user,
+      update_time, update_user
+      from host 
+      <bind name="_host_ip" value="'%' + ip +'%'"/>
+      WHERE host_ip like  #{_host_ip}
+      ORDER by `host_id`
+      limit #{startIndex}, #{pageSize}
+    </select>
+    <select id="selectAllCount" resultType="int">
+        SELECT count(*) from host
+    </select>
+    <select id="selectAllCountByIpLike" resultType="int">
+        SELECT count(*) from host <bind name="_host_ip" value="'%' + ip +'%'"/>
+        WHERE host_ip like  #{_host_ip}
+    </select>
 </mapper>

@@ -7,7 +7,6 @@ import com.archforce.deploy.pojo.Result;
 import com.archforce.deploy.pojo.UploadReply;
 import com.archforce.deploy.service.DeployService;
 import com.archforce.deploy.service.InstallInstanceService;
-import com.archforce.deploy.service.MainTaskService;
 import com.archforce.deploy.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +24,6 @@ import java.util.Map;
 public class DeployController {
     @Autowired
     private DeployService deployService;
-    @Autowired
-    private MainTaskService mainTaskService;
     @Autowired
     private InstallInstanceService instanceService;
 

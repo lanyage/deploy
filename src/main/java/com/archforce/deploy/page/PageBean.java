@@ -11,7 +11,26 @@ public class PageBean<T> {
     private int pageNumber;
     private int pageSize;
     private int startIndex;
+    private int size;
+    private int startPage;
+    private int endPage;
     private List<T> beanList;
+
+    public int getSize() {
+        return beanList.size();
+    }
+
+    public int getStartPage() {
+        if (beanList.size() > 0)
+            return 1;
+        return 0;
+    }
+
+
+    public int getEndPage() {
+        return getTotalPage();
+    }
+
 
     public int getTotal() {
         return total;
